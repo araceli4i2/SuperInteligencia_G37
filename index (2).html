@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Medidor de alucinaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f6;--sf:#fff;--ink:#16233a;--mu:#5b6880;--ln:#d9dfe9;--ok:#1f8a70;--ab:#b4bccb;--bad:#d0432f;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1626;--sf:#172138;--ink:#e8edf7;--mu:#98a4bd;--ln:#29354f;--ok:#3fb994;--ab:#55627c;--bad:#ef6a55;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1626;--sf:#172138;--ink:#e8edf7;--mu:#98a4bd;--ln:#29354f;--ok:#3fb994;--ab:#55627c;--bad:#ef6a55;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*:before,*:after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 "Instrument Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:clamp(24px,5vw,56px) clamp(16px,4vw,32px) 64px}
+h1,h2,.find b{font-family:"Bricolage Grotesque","Instrument Sans",system-ui,sans-serif;letter-spacing:-.02em;line-height:1.1;margin:0}
+h1{font-size:clamp(36px,6.5vw,64px);font-weight:700}
+.lead{max-width:58ch;color:var(--mu);font-size:18px;margin:16px 0 0}
+.key{display:flex;gap:8px 20px;flex-wrap:wrap;margin:22px 0 0;font-size:14px;color:var(--mu)}
+.key i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+.panel{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:clamp(16px,3vw,28px);margin-top:28px}
+.u{display:grid;grid-template-columns:128px 1fr;gap:6px 16px;padding:12px 0;border-top:1px solid var(--ln)}
+.u:first-of-type{border-top:0}
+.nm{font-weight:600;line-height:1.25}.nm small{display:block;font-weight:400;color:var(--mu);font-size:13px}
+.cells{display:flex;gap:2px;align-self:center}
+.cells s{flex:1;height:26px;border-radius:2px;background:var(--ok)}
+.cells s.h{background:var(--bad)}.cells s.a{background:var(--ab)}
+.st{grid-column:2;font-size:13px;color:var(--mu);font-variant-numeric:tabular-nums}
+.st b{color:var(--ink);font-weight:600}
+.find{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:28px;margin-top:40px}
+.find p{margin:0;color:var(--mu);max-width:36ch}
+.find b{display:block;color:var(--ink);font-size:20px;line-height:1.25;margin-bottom:8px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr));gap:20px;margin-top:20px}
+.grid .panel{margin-top:0}
+h2{font-size:22px;font-weight:600}
+.sub{color:var(--mu);font-size:14px;margin:6px 0 18px;max-width:52ch}
+.r{display:grid;grid-template-columns:112px 1fr 52px;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+.tk{height:14px;background:color-mix(in srgb,var(--mu) 15%,transparent);border-radius:7px;position:relative;overflow:hidden}
+.tk i{position:absolute;inset:0 auto 0 0;border-radius:7px}
+.r b{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.r em{font-style:normal;color:var(--mu);text-align:right;font-size:12px}
+.tk.d{overflow:visible;background:none;margin:0 6px}
+.tk.d:before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--ln);margin-top:-1px}
+.dt{position:absolute;top:50%;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;border:2px solid var(--sf);box-sizing:content-box;transform:translate(0,0)}
+.note{font-size:13px;color:var(--mu);margin:12px 0 0}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:center;border-bottom:1px solid var(--ln)}
+th:first-child,td:first-child{text-align:left;font-weight:600}
+thead th{font-weight:500;color:var(--mu);font-size:13px}
+.hm td+td{background:color-mix(in srgb,var(--bad) calc(var(--v)*.55%),transparent)}
+.scroll{overflow-x:auto}
+svg{display:block;width:100%;height:auto}
+svg text{fill:var(--mu);font:12px "Instrument Sans",system-ui,sans-serif}
+svg .lb{fill:var(--ink);font-weight:500}
+svg line{stroke:var(--ln)}
+[data-m]{transition:opacity .15s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin-top:20px;font-size:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:10px;height:10px;border-radius:50%}
+@media(max-width:520px){.u{grid-template-columns:1fr}.st{grid-column:1}.r{grid-template-columns:96px 1fr 48px}}
+@media(prefers-reduced-motion:reduce){[data-m]{transition:none}}
+.how{font-size:14px;margin:-6px 0 18px;max-width:54ch;padding-left:12px;border-left:3px solid var(--ln)}.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px 28px;margin:20px 0 0;padding:0;list-style:none}.steps b{display:block;font-weight:600}.steps span{color:var(--mu);font-size:14px}.lim{margin:14px 0 0;padding-left:20px;max-width:70ch}.lim li{margin:8px 0}.lim b{font-weight:600}
+</style>
+</head>
+<body>
+<main>
+<h1>Medidor de alucinaciones</h1>
+<p class="lead">Seis modelos respondieron las mismas 68 preguntas. Cada cuadro es una respuesta: inventada, una abstención («No lo sé») o correcta.</p>
+<div class="key"><span><i style="background:var(--bad)"></i>Alucinación</span><span><i style="background:var(--ab)"></i>Abstención</span><span><i style="background:var(--ok)"></i>Correcta</span></div>
+
+<section class="panel" aria-label="Composición de las respuestas por modelo"><div id="unit"></div></section>
+
+<div class="find">
+<p><b>Gemini fue el más fiable.</b>Una sola alucinación (1,5 %) y 94,4 % de las preguntas trampa detectadas.</p>
+<p><b>Cero alucinaciones no es buen desempeño.</b>SmolLM2 se abstuvo en 67 de 68 preguntas y solo acertó una.</p>
+<p><b>La confianza no distingue aciertos de errores.</b>Al equivocarse, los modelos declararon entre 86,8 y 95,0 sobre 100.</p>
+</div>
+
+<section class="panel"><h2>Cómo se hizo la prueba</h2><p class="sub">Una alucinación es una respuesta falsa o sin respaldo que se presenta como si fuera correcta. La prueba se programó en Python, en un cuaderno de Google Colab.</p><ol class="steps"><li><b>Preguntas</b><span>68 preguntas con respuesta verificada: 15 hechos, 35 datos finos (años, cifras, autores) y 18 trampas.</span></li><li><b>Misma instrucción</b><span>Todos los modelos reciben el mismo mensaje: responder breve, decir «No lo sé» si dudan y declarar su confianza de 0 a 100.</span></li><li><b>Repeticiones</b><span>Una corrida a temperatura 0 (la principal) y dos a temperatura 0,7 para medir la consistencia.</span></li><li><b>Calificación</b><span>Cada respuesta se clasifica como correcta, abstención o alucinación. Es automática y aproximada.</span></li></ol><p class="note">Modelos: Gemini (gemini-3.5-flash-lite, por API) y cinco modelos abiertos de Hugging Face, de 0,5 a 3,8 mil millones de parámetros.</p></section>
+
+<div class="grid">
+<section class="panel"><h2>Tasa de alucinación</h2><p class="sub">Porcentaje de las 68 preguntas respondidas de forma incorrecta.</p><p class="how">Cuenta como alucinación toda respuesta incorrecta. En las trampas, responder con seguridad en vez de reconocer que no existe también cuenta.</p><div id="c1"></div></section>
+<section class="panel"><h2>Precisión</h2><p class="sub">Porcentaje de respuestas correctas.</p><p class="how">La respuesta debe contener la respuesta esperada. Las abstenciones no suman: por eso SmolLM2 queda en solo 1,5 %.</p><div id="c2"></div></section>
+<section class="panel"><h2>Preguntas trampa</h2><p class="sub">Porcentaje de trampas en que el modelo se abstuvo en vez de inventar.</p><p class="how">Las trampas son preguntas sobre cosas que no existen, como un «Nobel de Informática». Lo correcto es decir que no existe o que no se sabe.</p><div id="c3"></div></section>
+<section class="panel"><h2>Consistencia</h2><p class="sub">Porcentaje de preguntas con el mismo resultado al repetirlas.</p><p class="how">Cada pregunta se repitió dos veces con temperatura 0,7 (más aleatoriedad). Es consistente si el resultado no cambió.</p><div id="c4"></div></section>
+<section class="panel"><h2>Alucinaciones por tipo de pregunta</h2><p class="sub">Porcentaje de respuestas incorrectas. Más intenso, más errores.</p><p class="how">Hechos: datos generales (15 preguntas). Datos finos: años, cifras y autores (35). Trampas: premisas falsas (18).</p><div class="scroll"><table class="hm" id="hm"></table></div></section>
+<section class="panel"><h2>Confianza declarada</h2><p class="sub">Promedio de 0 a 100 según el resultado de la respuesta.</p><p class="how">Cada modelo declara su confianza al final de su respuesta. Si estuviera bien calibrado, declararía menos al equivocarse; casi no lo hace.</p><div id="cf"></div>
+<div class="legend"><span><i style="background:var(--ok)"></i>Al acertar</span><span><i style="background:var(--ab)"></i>Al abstenerse</span><span><i style="background:var(--bad)"></i>Al equivocarse</span></div>
+<p class="note">Sin punto = el modelo no entregó una confianza legible.</p></section>
+</div>
+
+<section class="panel"><h2>Tamaño del modelo y alucinaciones</h2><p class="sub">Más parámetros no garantizó menos errores. Gemini no aparece porque no publica su tamaño.</p><p class="how">Solo la serie Qwen2.5 (0,5B, 1,5B y 3B) permite aislar el efecto del tamaño, y aun así dentro de una sola familia.</p><div id="sc"></div></section>
+
+<section class="panel"><h2>Resultados completos</h2><p class="sub">Alucinaciones %: respuestas incorrectas sobre 68. Correctas %: respuestas con el dato esperado. Abstenciones: veces que dijo no saber o rechazó la premisa. Trampas con abstención %: de 18 trampas, cuántas reconoció. Consistencia %: mismo resultado en las dos repeticiones.</p><div class="scroll"><table id="tb"></table></div></section>
+<section class="panel"><h2>Cómo leer estos resultados</h2><ul class="lim"><li><b>Muestra pequeña.</b> Con 68 preguntas, cada una vale 1,5 puntos porcentuales; las diferencias pequeñas no son concluyentes.</li><li><b>Calificación automática.</b> Puede equivocarse con respuestas correctas redactadas de otra forma, así que los porcentajes son aproximados.</li><li><b>Comparación no controlada.</b> Los modelos difieren en tamaño, familia, datos de entrenamiento y tipo de acceso.</li><li><b>Sin errores no es sinónimo de bueno.</b> SmolLM2 no alucinó porque casi no respondió, y que Gemini fallara una vez no demuestra que nunca alucine.</li><li><b>Resultados fechados.</b> Corresponden a las versiones disponibles en noviembre de 2026.</li></ul></section>
+</main>
+<script>
+const M=[
+{n:'Gemini',p:'Tamaño no publicado',c:'#0072B2',ok:50,ab:17,h:1,hr:1.5,pr:73.5,tr:94.4,cs:97.1,ty:[0,0,5.6],cf:[100,100,95]},
+{n:'Qwen2.5-0.5B',p:'0,5 mil millones',c:'#E69F00',ok:1,ab:19,h:48,hr:70.6,pr:1.5,tr:50,cs:58.8,ty:[77.1,80,50],cf:[null,null,86.8],s:.5},
+{n:'Qwen2.5-1.5B',p:'1,5 mil millones',c:'#009E73',ok:20,ab:18,h:30,hr:44.1,pr:29.4,tr:50,cs:83.8,ty:[45.7,33.3,50],cf:[90.6,27.5,90.2],s:1.5},
+{n:'SmolLM2-1.7B',p:'1,7 mil millones',c:'#CC79A7',ok:1,ab:67,h:0,hr:0,pr:1.5,tr:100,cs:79.4,ty:[0,0,0],cf:[null,null,null],s:1.7},
+{n:'Qwen2.5-3B',p:'3 mil millones',c:'#D55E00',ok:27,ab:7,h:34,hr:50,pr:39.7,tr:38.9,cs:88.2,ty:[60,13.3,61.1],cf:[100,68.6,94.8],s:3},
+{n:'Phi-3.5-mini',p:'3,8 mil millones',c:'#56B4E9',ok:31,ab:16,h:21,hr:30.9,pr:45.6,tr:61.1,cs:89.7,ty:[31.4,20,38.9],cf:[96.6,0,88.1],s:3.8}];
+const f=v=>v.toFixed(1).replace('.',',');
+const $=id=>document.getElementById(id);
+$('unit').innerHTML=M.map((m,i)=>`<div class="u" data-m="${i}"><div class="nm">${m.n}<small>${m.p}</small></div>
+<div class="cells" role="img" aria-label="${m.h} alucinaciones, ${m.ab} abstenciones, ${m.ok} correctas">${'<s class="h"></s>'.repeat(m.h)+'<s class="a"></s>'.repeat(m.ab)+'<s></s>'.repeat(m.ok)}</div>
+<div class="st"><b>${m.h}</b> alucinaciones · <b>${m.ab}</b> abstenciones · <b>${m.ok}</b> correctas</div></div>`).join('');
+const bars=(id,k,max)=>$(id).innerHTML=M.map((m,i)=>`<div class="r" data-m="${i}"><span>${m.n}</span><span class="tk"><i style="width:${m[k]/max*100}%;background:${m.c}"></i></span><b>${f(m[k])} %</b></div>`).join('');
+bars('c1','hr',100);bars('c2','pr',100);bars('c3','tr',100);bars('c4','cs',100);
+$('hm').innerHTML='<thead><tr><th></th><th>Hechos</th><th>Datos finos</th><th>Trampas</th></tr></thead><tbody>'+
+M.map((m,i)=>`<tr data-m="${i}"><td>${m.n}</td>${[1,0,2].map(j=>`<td style="--v:${m.ty[j]}">${f(m.ty[j])} %</td>`).join('')}</tr>`).join('')+'</tbody>';
+const col=['var(--ok)','var(--ab)','var(--bad)'];
+$('cf').innerHTML=M.map((m,i)=>`<div class="r" data-m="${i}"><span>${m.n}</span><span class="tk d">${m.cf.map((v,j)=>v==null?'':`<i class="dt" style="left:${v}%;background:${col[j]}" title="${f(v)}"></i>`).join('')}</span><em>${m.cf.every(v=>v==null)?'sin dato':''}</em></div>`).join('');
+const X=s=>46+s/5.5*450,Y=v=>250-v/80*230;
+let g='';[0,20,40,60,80].forEach(v=>g+=`<line x1="46" x2="496" y1="${Y(v)}" y2="${Y(v)}"/><text x="38" y="${Y(v)+4}" text-anchor="end">${v} %</text>`);
+[0,1,2,3,4,5].forEach(s=>g+=`<text x="${X(s)}" y="272" text-anchor="middle">${s}</text>`);
+g+='<text x="271" y="292" text-anchor="middle">Parámetros (miles de millones)</text>';
+M.slice(1).forEach((m,i)=>g+=`<g data-m="${i+1}"><circle cx="${X(m.s)}" cy="${Y(m.hr)}" r="8" fill="${m.c}"/><text class="lb" x="${X(m.s)+13}" y="${Y(m.hr)+4}">${m.n}</text></g>`);
+$('sc').innerHTML=`<svg viewBox="0 0 520 300" role="img" aria-label="Tamaño del modelo frente a porcentaje de alucinaciones">${g}</svg>`;
+$('tb').innerHTML='<thead><tr><th></th><th>Alucinaciones %</th><th>Correctas %</th><th>Abstenciones</th><th>Trampas con abstención %</th><th>Consistencia %</th></tr></thead><tbody>'+
+M.map((m,i)=>`<tr data-m="${i}"><td>${m.n}</td><td>${f(m.hr)}</td><td>${f(m.pr)}</td><td>${m.ab}</td><td>${f(m.tr)}</td><td>${f(m.cs)}</td></tr>`).join('')+'</tbody>';
+const st=document.createElement('style');
+st.textContent=M.map((_,i)=>`body[data-hl="${i}"] [data-m]:not([data-m="${i}"]){opacity:.3}`).join('');
+document.head.appendChild(st);
+document.addEventListener('pointerover',e=>{const t=e.target.closest&&e.target.closest('[data-m]');document.body.dataset.hl=t?t.dataset.m:''});
+</script>
+</body>
+</html>
